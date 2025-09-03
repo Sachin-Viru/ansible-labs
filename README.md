@@ -46,6 +46,21 @@ sudo apt install vagrant
 > Download and install VirtualBox from:  
 > 🔗 https://www.virtualbox.org/wiki/Downloads
 
+###           OR
+
+```bash
+sudo apt install virtualbox
+```
+### ⚙️ Install Ansible
+
+```bash
+sudo apt install ansible
+```
+### ✔️  Check Version
+
+```bash
+ansible --version
+```
 ---
 
 ### 🔐 BIOS Setup (Important)
