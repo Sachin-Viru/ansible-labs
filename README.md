@@ -98,183 +98,14 @@ cd ansible-labs/
 sudo vagrant up
 ```
 
-- This will spin up `host0`, `host1`, and `host2` as defined in the `Vagrantfile`.
-- SSH into a host using:
-
-```bash
-sudo vagrant ssh host0
-sudo su   # To switch to root
-```
+This will spin up `host0`, `host1`, and `host2` as defined in the `Vagrantfile`.
 
 ---
 
 ## 📚 Documentation
 
-- 📘 [Vagrant Setup Guide](docs/vagrant_setup.md)  
+- 📘 **Vagrant Setup Guide**  
   Covers BIOS settings, SSH root login, key management, etc.
-
-- 📘 [Ansible Commands Cheatsheet](docs/ansible_commands.md)  
-  Quick reference for useful ad-hoc commands and playbook runs
-
----
-
-## ▶️ Running Ansible Playbooks
-
-### 🔁 Check VM connectivity
-
-```bash
-ansible all -i inventory/hosts.ini -m ping
-```
-
-### 🛠️ Run a playbook
-
-```bash
-ansible-playbook -i inventory/hosts.ini playbooks/nginx.yml
-```
-
----
-
-## 🌐 Nginx Setup Using Ansible
-
-The `nginx.yml` playbook in `playbooks/` is designed to:
-
-- Install **Nginx** on `host2`
-- Start and enable the Nginx service
-- Create a custom directory `/var/www/html/sachin`
-- Upload a custom `sachin.html` page to that directory
-- Copy and modify the default Nginx config to host the custom page
-- Enable the new config and restart Nginx
-
-This demonstrates how to automate end-to-end web server setup using Ansible.
-
-📸 **Playbook Output Screenshot**  
-> ![nginx-playbook-output](docs/images/nginx-playbook-output.png)
-
----
-
-### 📜 `nginx.yml` Playbook
-
-```yaml
----
-- name: install another webserver nginx and hosts the website in host2 server 
-  hosts: all
-  become: true
-  become_user: root
-  remote_user: root
-  gather_facts: false
-  tasks:
-    - name: install the nginx-web server in host2
-      apt:
-        name: nginx
-        state: present
-        update_cache: true
-
-    - name: start the nginx-web server in host2
-      service:
-        name: nginx
-        state: started
-
-    - name: enable the nginx-web server in host2
-      service:
-        name: nginx
-        enabled: true
-
-    - name: create custom directory in /var/www/html/ in host2
-      file:
-        path: /var/www/html/sachin
-        state: directory
-        owner: www-data
-        group: www-data
-        mode: 0755
-
-    - name: create custom html file in /var/www/html/sachin in host2
-      file: 
-        path: /var/www/html/sachin/sachin.html
-        state: touch
-        owner: www-data
-        group: www-data
-        mode: 0644
-
-    - name: copying custom html file from local to host2 
-      copy:
-        src: /home/sachin/Documents/sachin.html
-        dest: /var/www/html/sachin/sachin.html
-        owner: www-data
-        group: www-data
-        mode: 0644
-
-    - name: copying 000-default.conf to /etc/nginx/sites-available/sachin.conf in host2
-      copy:
-        src: /etc/nginx/sites-available/default  
-        dest: /etc/nginx/sites-available/sachin.conf
-        owner: root
-        group: root
-        mode: 0644
-        remote_src: yes
-
-    - name: remove the default_hosts in sachin.conf file
-      replace:
-        path: /etc/nginx/sites-available/sachin.conf
-        regexp: '^(\s*)listen 80 default_server;\s+.+'     
-        replace: '        listen 80;'
-
-    - name: remove the listen [::]:80 default_server;
-      replace:
-        path: /etc/nginx/sites-available/sachin.conf
-        regexp: '^(\s*)listen [::]:80 default_server;\s+.+'
-        replace: '        listen [::]:80;'  
-
-    - name: update server_name to IP
-      replace:
-        path: /etc/nginx/sites-available/sachin.conf
-        regexp: '^(\s*)server_name\s+.+'
-        replace: '        server_name 192.168.56.10;'
-
-    - name: update root directory
-      replace:
-        path: /etc/nginx/sites-available/sachin.conf
-        regexp: '^(\s*)root\s+.+'
-        replace: '        root /var/www/html/sachin;'
-
-    - name: link config to sites-enabled
-      command: ln -s /etc/nginx/sites-available/sachin.conf /etc/nginx/sites-enabled 
-      register: ln_to_output
-      ignore_errors: true
-
-    - name: check output of ln command
-      debug:
-        msg: "{{ ln_to_output.stdout }}"   
-
-    - name: check error of ln command
-      debug: 
-        msg: "{{ ln_to_output.stderr }}"    
-
-    - name: check nginx config test 
-      command: nginx -t
-      register: nginx_test_output
-      ignore_errors: true
-
-    - name: check output of nginx test
-      debug:
-        msg: "{{ nginx_test_output.stdout }}"   
-
-    - name: check error of nginx test
-      debug:
-        msg: "{{ nginx_test_output.stderr }}" 
-
-    - name: restart nginx after config change
-      service:
-        name: nginx
-        state: restarted
-
-    - name: check the status of nginx
-      command: systemctl status nginx
-      register: nginx_status   
-
-    - name: show nginx status
-      debug:
-        msg: "{{ nginx_status.stdout }}"   
-```
 
 ---
 
@@ -282,7 +113,7 @@ This demonstrates how to automate end-to-end web server setup using Ansible.
 
 You’ll find helpful screenshots in the `docs/images/` folder.
 
-> Example:
+> Example:  
 > ![vagrant up](docs/images/vagrant-up-output.png)
 
 ---
@@ -308,9 +139,52 @@ You’ll find helpful screenshots in the `docs/images/` folder.
 
 ---
 
+## 📘 Ansible Commands Cheatsheet
+
+Open this file to explore more useful commands:  
+📄 `docs/ansible_commands.md` – Quick reference for ad-hoc commands and playbook runs
+
+---
+
+## ▶️ Running Ansible Playbooks
+
+### 🔁 Check VM connectivity
+
+```bash
+ansible all -i inventory/hosts.ini -m ping
+```
+
+### 🛠️ Run a playbook
+
+```bash
+ansible-playbook -i inventory/hosts.ini playbooks/nginx.yml
+```
+
+---
+
+## 🌐 Nginx Setup Using Ansible
+
+The `nginx.yml` playbook in `playbooks/` is designed to:
+
+- Install **Nginx** on `host2`  
+- Start and enable the Nginx service  
+- Create a custom directory `/var/www/html/sachin`  
+- Upload a custom `sachin.html` page to that directory  
+- Copy and modify the default Nginx config to host the custom page  
+- Enable the new config and restart Nginx  
+
+This demonstrates how to automate end-to-end web server setup using Ansible.
+
+---
+
+📸 **Playbook Output Screenshot**  
+> ![nginx-playbook-output](docs/images/nginx-playbook-output.png)
+
+---
+
 ## 🧠 Author
 
-Built by 🚀 *Sachin-viru!*  
+Built by 🚀 *Sachin-Viru!*  
 Feel free to fork and extend this lab for your own Ansible experiments.
 
 ---
