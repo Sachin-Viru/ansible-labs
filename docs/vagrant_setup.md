@@ -37,9 +37,9 @@ Create a file named `Vagrantfile` in your project directory with the following c
 # vi: set ft=ruby :
 
 hosts = {
-  "host0" => "172.168.56.10",
-  "host1" => "172.168.56.11",
-  "host2" => "172.168.56.12"
+  "host0" => "192.168.56.10",
+  "host1" => "192.168.56.11",
+  "host2" => "192.168.56.12"
 }
 
 Vagrant.configure("2") do |config|
