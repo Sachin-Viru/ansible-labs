@@ -180,6 +180,9 @@ This demonstrates how to automate end-to-end web server setup using Ansible.
 📸 **Playbook Output Screenshot**  
 > ![nginx-playbook-output](docs/images/nginx-playbook-output.png)
 
+📸 **Final Website Screenshot**  
+> ![nginx-final-website](docs/images/nginx-final-website.png)
+
 ---
 
 ## 🧠 Author
