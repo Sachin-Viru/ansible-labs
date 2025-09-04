@@ -104,7 +104,7 @@ This will spin up `host0`, `host1`, and `host2` as defined in the `Vagrantfile`.
 
 ## 📚 Documentation
 
-- 📘 **Vagrant Setup Guide**  
+- 📘 **Vagrant Setup Guide**(docs/vagrant_setup.md)
   Covers BIOS settings, SSH root login, key management, etc.
 
 ---
@@ -142,7 +142,7 @@ You’ll find helpful screenshots in the `docs/images/` folder.
 ## 📘 Ansible Commands Cheatsheet
 
 Open this file to explore more useful commands:  
-📄 `docs/ansible_commands.md` – Quick reference for ad-hoc commands and playbook runs
+📄 (docs/ansible_commands.md) – Quick reference for ad-hoc commands and playbook runs
 
 ---
 
