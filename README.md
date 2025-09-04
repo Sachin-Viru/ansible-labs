@@ -8,19 +8,37 @@ Welcome to the **Ansible Labs** repository! This project helps you learn and tes
 
 ```
 ansible-labs/
-├── inventory/               # Inventory file for Ansible
+├── docs/                          # Documentation & screenshots
+│   ├── ansible_commands.md        # Cheatsheet of useful Ansible commands
+│   ├── vagrant_setup.md           # Guide to set up Vagrant lab
+│   └── images/                    # Images used in documentation
+│       ├── authorized_keys.png
+│       ├── sshd_config.png
+│       ├── ssh-restart.png
+│       ├── ssh-root-login.png
+│       ├── sudo-su-root.png
+│       ├── vagrant-ssh-host0.png
+│       └── vagrant-up-output.png
+│
+├── inventory/                     # Inventory file for Ansible
 │   └── hosts.ini
-├── playbooks/               # Ansible playbooks
-│   └── main.yml
-├── roles/                   # Reusable Ansible roles
-│   └── ...
-├── docs/                    # Documentation & Images
-│   ├── ansible_commands.md
-│   ├── vagrant_setup.md
-│   └── images/
-├── Vagrantfile              # Vagrant VM configuration
-├── ansible.cfg              # Ansible config file
-└── README.md                # You are here!
+│
+├── playbooks/                     # Ansible playbooks
+│   └── nginx.yml                  # Example playbook to configure Nginx
+│
+├── roles/                         # Reusable Ansible roles
+│   └── apache/                    # Apache role
+│       ├── tasks/                 # Task definitions
+│       │   └── main.yml
+│       ├── templates/             # Jinja2 templates (currently empty)
+│       └── vars/                  # Variables for the role
+│           └── main.yml
+│
+├── vagrant/                       # Vagrant configuration files
+│   └── Vagrantfile
+│
+├── README.md                      # Project overview
+
 ```
 
 ---
