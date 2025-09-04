@@ -1,0 +1,131 @@
+---
+- name: install another webserver nginx and hosts the webiste in host2 server 
+  hosts: all
+  become: true
+  become_user: root
+  remote_user: root
+  gather_facts: false
+  tasks:
+    - name: install the nginx-web server in host2
+      apt:
+        name: nginx
+        state: present
+        update_cache: true
+
+
+    - name: start the nginx-web server in host2
+      service:
+        name: nginx
+        state: started
+
+
+    - name: enable the nginx-web server in host2
+      service:
+        name: nginx
+        enabled: true
+
+
+    - name: create custom directory in /var/www/html/ in host2
+      file:
+        path: /var/www/html/sachin
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: 0755
+
+
+    - name: create custom html file in /var/www/html/sachin in host2
+      file: 
+        path: /var/www/html/sachin/sachin.html
+        state: touch
+        owner: www-data
+        group: www-data
+        mode: 0644
+
+
+    - name: cpoying custom html file from local to host2 
+      copy:
+        src: /home/sachin/Documents/sachin.html
+        dest: /var/www/html/sachin/sachin.html
+        owner: www-data
+        group: www-data
+        mode: 0644
+
+
+    - name: copying 000-default.conf to /etc/nginx/sites-available/sachin.conf in host2
+      copy:
+        src: /etc/nginx/sites-available/default  
+        dest: /etc/nginx/sites-available/sachin.conf
+        owner: root
+        group: root
+        mode: 0644
+        remote_src: yes
+
+    - name: remove the default_hosts in sachin.conf file in /etc/nginx/sites-available/sachin.conf file
+      replace:
+        path: /etc/nginx/sites-available/sachin.conf
+        regexp: '^(\s*)listen 80 default_server;\s+.+'     
+        replace: '        listen 80;'
+
+    - name: remove the listen [::]:80 default_server; in /etc/nginx/sites-available/sachin.conf file  
+      replace:
+        path: /etc/nginx/sites-available/sachin.conf
+        regexp: '^(\s*)listen [::]:80 default_server;\s+.+'
+        replace: '        listen [::]:80;'  
+
+    - name: make changes in /etc/nginx/sites-available/sachin.conf accoring to our required in host2
+      replace:
+        path: /etc/nginx/sites-available/sachin.conf
+        regexp: '^(\s*)server_name\s+.+'
+        replace: '        server_name 192.168.56.10;'
+
+     
+    - name: make changes in /etc/nginx/sites-available/sachin.conf for root directory
+      replace:
+        path: /etc/nginx/sites-available/sachin.conf
+        regexp: '^(\s*)root\s+.+'
+        replace: '        root /var/www/html/sachin;'
+
+    - name: link a /etc/nginx/sites-available/sachin.conf to /etc/nginx/sites-enables
+      command: ln -s /etc/nginx/sites-available/sachin.conf /etc/nginx/sites-enabled 
+      register: ln_to_output
+      ignore_errors: true
+
+
+    - name: chek the status of ln-s command output
+      debug:
+        msg: "{{ ln_to_output.stdout }}"   
+
+
+    - name: check the error of ln-s command
+      debug: 
+        msg: "{{ ln_to_output.stderr }}"    
+
+
+    - name: check nginx configtest 
+      command: nginx -t
+      register: nginx_test_output
+      ignore_errors: true
+
+
+    - name: check output of nginx-test
+      debug:
+        msg: "{{ nginx_test_output.stdout }}"   
+
+
+    - name: check error of nginx-test
+      debug:
+        msg: "{{ nginx_test_output.stderr }}" 
+
+    - name: restart the nginx after the chnages 
+      service:
+        name: nginx
+        state: restarted
+
+    - name: check the status of nginx
+      command: systemctl status nginx
+      register: nginx_status   
+
+    - name: check the stauts of nginx
+      debug:
+        msg: "{{ nginx_status.stdout }}" 
