@@ -173,6 +173,20 @@ The `nginx.yml` playbook in `playbooks/` is designed to:
 - Copy and modify the default Nginx config to host the custom page  
 - Enable the new config and restart Nginx  
 
+📝 **Important Note:**  
+Before running the playbook, you must create a simple HTML file (`sachin.html`) anywhere on your local system.  
+Then, update this task in the playbook with the correct file path:
+
+```yaml
+- name: copying custom html file from local to host2 
+  copy:
+    src: /path/to/your/sachin.html    # <-- change this to your actual file location
+    dest: /var/www/html/sachin/sachin.html
+    owner: www-data
+    group: www-data
+    mode: 0644
+```
+
 This demonstrates how to automate end-to-end web server setup using Ansible.
 
 ---
