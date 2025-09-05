@@ -138,7 +138,7 @@ You’ll find helpful screenshots in the `docs/images/` folder.
 - Configure root login only from inside the VM.
 
 ---
-
+## 📚 Ansible Basic commands Cheatsheet
 ## 📘 [Ansible Commands Cheatsheet](docs/ansible_commands.md)
 
 Open this file to explore more useful commands:  
